@@ -57,7 +57,9 @@ public class Vet extends Person {
 
 	@XmlElement
 	public List<Specialty> getSpecialties() {
-		return getSpecialtiesInternal().stream().sorted(Comparator.comparing(NamedEntity::getName)).toList();
+		return getSpecialtiesInternal().stream()
+			.sorted(Comparator.comparing(NamedEntity::getName))
+			.toList();
 	}
 
 	public int getNrOfSpecialties() {

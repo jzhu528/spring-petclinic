@@ -15,6 +15,8 @@
  */
 package org.springframework.samples.petclinic.vet;
 
+import java.util.Collection;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -22,13 +24,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-
 /**
- * Repository class for <code>Vet</code> domain objects All method names are compliant
- * with Spring Data naming conventions so this interface can easily be extended for Spring
- * Data. See:
- * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
+ * Data access contract for {@link Vet} records.
+ * <p>
+ * Vet data is read frequently by the HTML and JSON endpoints, so read operations are
+ * marked as read-only transactions and cached under the {@code vets} cache.
+ * </p>
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
@@ -38,18 +39,19 @@ import java.util.Collection;
 public interface VetRepository extends Repository<Vet, Integer> {
 
 	/**
-	 * Retrieve all <code>Vet</code>s from the data store.
-	 * @return a <code>Collection</code> of <code>Vet</code>s
+	 * Retrieve all vets for non-paginated consumers such as the JSON endpoint.
+	 * @return collection of all {@link Vet}s
+	 * @throws DataAccessException if the data store cannot be read
 	 */
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
 	Collection<Vet> findAll() throws DataAccessException;
 
 	/**
-	 * Retrieve all <code>Vet</code>s from data store in Pages
-	 * @param pageable
-	 * @return
-	 * @throws DataAccessException
+	 * Retrieve vets using page boundaries for the HTML list view.
+	 * @param pageable page request controlling result size and offset
+	 * @return page of {@link Vet}s
+	 * @throws DataAccessException if the data store cannot be read
 	 */
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
