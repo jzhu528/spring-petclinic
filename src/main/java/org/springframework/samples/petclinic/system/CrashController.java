@@ -30,8 +30,16 @@ class CrashController {
 
 	@GetMapping("/oups")
 	public String triggerException() {
-		throw new RuntimeException(
+		throw new ExpectedCrashException(
 				"Expected: controller used to showcase what " + "happens when an exception is thrown");
+	}
+
+	static class ExpectedCrashException extends IllegalStateException {
+
+		ExpectedCrashException(String message) {
+			super(message);
+		}
+
 	}
 
 }
