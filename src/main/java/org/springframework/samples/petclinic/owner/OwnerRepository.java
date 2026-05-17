@@ -22,10 +22,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Repository class for <code>Owner</code> domain objects. All method names are compliant
- * with Spring Data naming conventions so this interface can easily be extended for Spring
- * Data. See:
- * https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.query-methods.query-creation
+ * Data access contract for {@link Owner} records.
+ * <p>
+ * The application uses this repository as the owner service boundary: controllers call
+ * these methods for owner lookup, creation, and updates while Spring Data JPA provides
+ * the implementation at runtime. Method names intentionally follow Spring Data query
+ * conventions so the behavior can be inferred without a handwritten query.
+ * </p>
  *
  * @author Ken Krebs
  * @author Juergen Hoeller
@@ -36,26 +39,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 
 	/**
-	 * Retrieve {@link Owner}s from the data store by last name, returning all owners
-	 * whose last name <i>starts</i> with the given name.
-	 * @param lastName Value to search for
-	 * @return a Collection of matching {@link Owner}s (or an empty Collection if none
-	 * found)
+	 * Retrieve {@link Owner}s whose last name starts with the supplied text.
+	 * @param lastName last-name prefix to search for; an empty string returns the
+	 * broadest match set
+	 * @param pageable page request controlling result size and offset
+	 * @return a page of matching {@link Owner}s, or an empty page when no match exists
 	 */
 	Page<Owner> findByLastNameStartingWith(String lastName, Pageable pageable);
 
 	/**
-	 * Retrieve an {@link Owner} from the data store by id.
-	 * <p>
-	 * This method returns an {@link Optional} containing the {@link Owner} if found. If
-	 * no {@link Owner} is found with the provided id, it will return an empty
-	 * {@link Optional}.
-	 * </p>
-	 * @param id the id to search for
-	 * @return an {@link Optional} containing the {@link Owner} if found, or an empty
-	 * {@link Optional} if not found.
-	 * @throws IllegalArgumentException if the id is null (assuming null is not a valid
-	 * input for id)
+	 * Retrieve an {@link Owner} by database identifier.
+	 * @param id owner identifier to search for
+	 * @return an {@link Optional} containing the owner when found, or an empty
+	 * {@link Optional} otherwise
 	 */
 	Optional<Owner> findById(Integer id);
 

@@ -22,7 +22,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 /**
- * Repository class for <code>PetType</code> domain objects.
+ * Data access contract for the controlled list of {@link PetType} values.
+ * <p>
+ * Pet types are used by pet forms and validation logic, so this repository keeps the
+ * lookup behavior in one place and returns the values in display order.
+ * </p>
  *
  * @author Patrick Baumgartner
  */
@@ -30,8 +34,8 @@ import org.springframework.data.jpa.repository.Query;
 public interface PetTypeRepository extends JpaRepository<PetType, Integer> {
 
 	/**
-	 * Retrieve all {@link PetType}s from the data store.
-	 * @return a Collection of {@link PetType}s.
+	 * Retrieve all supported pet types ordered by name.
+	 * @return sorted list of {@link PetType}s for use in forms and validation
 	 */
 	@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
 	List<PetType> findPetTypes();
